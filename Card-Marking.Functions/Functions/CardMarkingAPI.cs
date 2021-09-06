@@ -28,7 +28,7 @@ namespace Card_Marking.Functions.Functions
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             CardMarking cardMarking = JsonConvert.DeserializeObject<CardMarking>(requestBody);
-            if (cardMarking.IdEmployee==0)
+            if (cardMarking.IdEmployee == 0)
             {
                 return new BadRequestObjectResult(new Response
 
@@ -61,14 +61,14 @@ namespace Card_Marking.Functions.Functions
 
             CardMarkingEntity cardMarkingEntity = new CardMarkingEntity
             {
-                
+
                 ETag = "*",
                 IsConsolidated = false,
                 PartitionKey = "CardMarking",
                 RowKey = Guid.NewGuid().ToString(),
                 DateMarking = cardMarking.DateMarking.ToUniversalTime(),
                 IdEmployee = cardMarking.IdEmployee,
-                TypeMarking =cardMarking.TypeMarking,
+                TypeMarking = cardMarking.TypeMarking,
 
             };
 
@@ -119,7 +119,7 @@ namespace Card_Marking.Functions.Functions
         public static IActionResult GetCardMarkingById(
            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "CardMarking/{id}")] HttpRequest req,
            [Table("cardmarking", "CardMarking", "{id}", Connection = "AzureWebJobsStorage")] CardMarkingEntity cardMarkingEntity,
-           String id,
+           string id,
            ILogger log)
         {
             log.LogInformation($"Get Card Marking by Id: {id}, received.");
@@ -150,9 +150,9 @@ namespace Card_Marking.Functions.Functions
         public static async Task<IActionResult> DeleteCardMarking(
           [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "CardMarking/{id}")] HttpRequest req,
           [Table("cardmarking", "CardMarking", "{id}", Connection = "AzureWebJobsStorage")] CardMarkingEntity cardMarkingEntity,
-    
+
           [Table("cardmarking", Connection = "AzureWebJobsStorage")] CloudTable cardMarkingTable,
-          String id,
+          string id,
           ILogger log)
         {
             log.LogInformation($"Delete Card Marking: {id}, received.");

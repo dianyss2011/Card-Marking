@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Card_Marking.Common.Responses
+﻿namespace Card_Marking.Common.Responses
 {
     public class Response
     {
