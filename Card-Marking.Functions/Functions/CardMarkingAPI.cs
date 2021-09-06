@@ -115,5 +115,37 @@ namespace Card_Marking.Functions.Functions
 
         }
 
+        [FunctionName(nameof(GetCardMarkingById))]
+        public static IActionResult GetCardMarkingById(
+           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "CardMarking/{id}")] HttpRequest req,
+           [Table("cardmarking", "CardMarking", "{id}", Connection = "AzureWebJobsStorage")] CardMarkingEntity cardMarkingEntity,
+           String id,
+           ILogger log)
+        {
+            log.LogInformation($"Get Card Marking by Id: {id}, received.");
+
+            if (cardMarkingEntity == null)
+            {
+                return new BadRequestObjectResult(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Card Marking not found."
+                });
+            }
+
+            string message = $"Card Marking: {cardMarkingEntity.RowKey}, retrieved.";
+            log.LogInformation(message);
+
+
+            return new OkObjectResult(new Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = cardMarkingEntity,
+            });
+
+        }
+
+
     }
 }
