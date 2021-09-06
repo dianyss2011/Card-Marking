@@ -189,6 +189,7 @@ namespace Card_Marking.Functions.Functions
         {
             log.LogInformation($"Update for Card Marking: {id}, received.");
 
+
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             CardMarking cardMarking = JsonConvert.DeserializeObject<CardMarking>(requestBody);
 
