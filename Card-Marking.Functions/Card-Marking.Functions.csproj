@@ -5,7 +5,11 @@
     <RootNamespace>Card_Marking.Functions</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Card-Marking.Common\Card-Marking.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
