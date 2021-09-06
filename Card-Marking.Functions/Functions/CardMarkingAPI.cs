@@ -87,6 +87,33 @@ namespace Card_Marking.Functions.Functions
             });
 
         }
-        
+
+        [FunctionName(nameof(GetAllCardMarking))]
+        public static async Task<IActionResult> GetAllCardMarking(
+           [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "CardMarking")] HttpRequest req,
+           [Table("cardmarking", Connection = "AzureWebJobsStorage")] CloudTable cardMarkingTable,
+           ILogger log)
+
+        {
+            log.LogInformation("Get all Card Marking received.");
+
+            TableQuery<CardMarkingEntity> query = new TableQuery<CardMarkingEntity>();
+            TableQuerySegment<CardMarkingEntity> cardMarkings = await cardMarkingTable.ExecuteQuerySegmentedAsync(query, null);
+
+            string message = "Retrieved all Card Markings. ";
+
+            log.LogInformation(message);
+
+
+
+            return new OkObjectResult(new Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = cardMarkings
+            });
+
+        }
+
     }
 }
