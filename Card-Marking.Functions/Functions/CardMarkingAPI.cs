@@ -146,6 +146,39 @@ namespace Card_Marking.Functions.Functions
 
         }
 
+        [FunctionName(nameof(DeleteCardMarking))]
+        public static async Task<IActionResult> DeleteCardMarking(
+          [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "CardMarking/{id}")] HttpRequest req,
+          [Table("cardmarking", "CardMarking", "{id}", Connection = "AzureWebJobsStorage")] CardMarkingEntity cardMarkingEntity,
+    
+          [Table("cardmarking", Connection = "AzureWebJobsStorage")] CloudTable cardMarkingTable,
+          String id,
+          ILogger log)
+        {
+            log.LogInformation($"Delete Card Marking: {id}, received.");
+
+            if (cardMarkingEntity == null)
+            {
+                return new BadRequestObjectResult(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Card Marking not found."
+                });
+            }
+
+            await cardMarkingTable.ExecuteAsync(TableOperation.Delete(cardMarkingEntity));
+            string message = $"Card Marking: {cardMarkingEntity.RowKey}, delete.";
+            log.LogInformation(message);
+
+
+            return new OkObjectResult(new Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = cardMarkingEntity,
+            });
+
+        }
 
     }
 }
