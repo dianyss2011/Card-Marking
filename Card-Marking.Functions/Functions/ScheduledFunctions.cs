@@ -12,7 +12,7 @@ namespace Card_Marking.Functions.Functions
     public static class ScheduledFunctions
     {
         [FunctionName("ScheduledFunctions")]
-        public static async Task Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer, ILogger log,
+        public static async Task Run([TimerTrigger("0 */2 * * * *")] TimerInfo myTimer, ILogger log,
             [Table("cardmarking", Connection = "AzureWebJobsStorage")] CloudTable cardMarkingTable,
             [Table("times", Connection = "AzureWebJobsStorage")] CloudTable timesTable)
         {
