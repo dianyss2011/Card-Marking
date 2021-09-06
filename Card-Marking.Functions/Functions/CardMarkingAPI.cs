@@ -180,5 +180,60 @@ namespace Card_Marking.Functions.Functions
 
         }
 
+        [FunctionName(nameof(UpdateCardMarking))]
+        public static async Task<IActionResult> UpdateCardMarking(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "CardMarking/{id}")] HttpRequest req,
+            [Table("cardmarking", Connection = "AzureWebJobsStorage")] CloudTable cardMarkingTable,
+            string id,
+            ILogger log)
+        {
+            log.LogInformation($"Update for Card Marking: {id}, received.");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            CardMarking cardMarking = JsonConvert.DeserializeObject<CardMarking>(requestBody);
+
+            //valide Card Marking Id
+            TableOperation findOperation = TableOperation.Retrieve<CardMarkingEntity>("CardMarking", id);
+            TableResult findresult = await cardMarkingTable.ExecuteAsync(findOperation);
+            if (findresult.Result == null)
+            {
+                return new BadRequestObjectResult(new Response
+                {
+                    IsSuccess = false,
+                    Message = "Card Marking not found."
+                });
+            }
+
+            //Update Card Marking
+            CardMarkingEntity cardMarkingEntity = (CardMarkingEntity)findresult.Result;
+            if (cardMarking.IdEmployee != 0)
+            {
+                cardMarkingEntity.IdEmployee = cardMarking.IdEmployee;
+            }
+
+            if (cardMarking.DateMarking != DateTime.MinValue)
+            {
+                cardMarkingEntity.DateMarking = cardMarking.DateMarking;
+            }
+
+            if (cardMarking.TypeMarking == 0 || cardMarking.TypeMarking == 1)
+            {
+                cardMarkingEntity.TypeMarking = cardMarking.TypeMarking;
+            }
+
+            TableOperation addOperation = TableOperation.Replace(cardMarkingEntity);
+            await cardMarkingTable.ExecuteAsync(addOperation);
+
+            string message = $"Card Marking: {id}, updated in table.";
+            log.LogInformation(message);
+
+
+            return new OkObjectResult(new Response
+            {
+                IsSuccess = true,
+                Message = message,
+                Result = cardMarkingEntity
+            });
+        }
     }
 }
